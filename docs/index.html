@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>DESK 바탕화면</title>
+<meta name="description" content="깔면 내 바탕화면 앱이 알아서 흑백 아이콘으로 바뀌는 턴테이블 바탕화면">
+<style>
+@font-face{font-family:Galmuri;src:url(../wallpaper/fonts/Galmuri11-Bold.woff2) format('woff2');font-weight:700}
+@font-face{font-family:Galmuri;src:url(../wallpaper/fonts/Galmuri11.woff2) format('woff2');font-weight:400}
+@font-face{font-family:Pretendard;src:url(../wallpaper/fonts/Pretendard-Regular.woff2) format('woff2');font-weight:400}
+@font-face{font-family:Pretendard;src:url(../wallpaper/fonts/Pretendard-SemiBold.woff2) format('woff2');font-weight:600}
+@font-face{font-family:Pretendard;src:url(../wallpaper/fonts/Pretendard-Bold.woff2) format('woff2');font-weight:700}
+:root{--bg:#0b0b0b;--card:#141414;--ink:#ececE8;--sub:#8b8b87;--mute:#5c5c59;--line:#2b2b29;--tile:#d2d2ce;--paper:#e7e7e4}
+@media (prefers-color-scheme:light){:root:not([data-theme="dark"]){--bg:#0b0b0b}}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink)}
+body{font:16px/1.75 Pretendard,"Malgun Gothic",sans-serif;-webkit-font-smoothing:antialiased}
+.px{font-family:Galmuri,monospace;-webkit-font-smoothing:none}
+.wrap{max-width:920px;margin:0 auto;padding:32px 16px 90px}
+header{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:26px}
+.logo{font-size:22px;font-weight:700;letter-spacing:.08em}
+.pill{border:2px solid var(--ink);border-radius:999px;padding:3px 14px;font-size:13px;white-space:nowrap}
+h1{font-size:clamp(28px,6vw,44px);line-height:1.15;margin:0 0 12px;letter-spacing:-.01em}
+.lead{color:var(--sub);font-size:17px;margin:0 0 22px}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 26px}
+.chips span{background:var(--card);border:1px solid var(--line);border-radius:999px;padding:4px 13px;font-size:13.5px}
+.hero{border-radius:16px;overflow:hidden;border:1px solid var(--line);box-shadow:0 20px 50px #000a}
+.hero img,figure img{display:block;width:100%;height:auto}
+.btn{display:inline-flex;align-items:center;gap:10px;margin:26px 0 8px;background:var(--tile);color:#0b0b0b;text-decoration:none;font-weight:700;padding:14px 22px;border-radius:14px;box-shadow:0 4px 0 #000;font-size:16px}
+.btn:hover{transform:translateY(-2px)}
+section{margin-top:54px}
+h2{font-size:20px;margin:0 0 14px;display:flex;align-items:center;gap:10px}
+h2 i{font-style:normal;display:inline-grid;place-items:center;width:30px;height:30px;border-radius:9px;background:var(--tile);color:#0b0b0b;font-size:14px}
+ul.list{list-style:none;padding:0;margin:0;display:grid;gap:8px}
+ul.list li{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:11px 14px}
+ul.list b{color:#fff}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:14px}
+figure{margin:0;background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+figcaption{padding:9px 13px;font-size:13.5px;color:var(--sub)}
+.steps{counter-reset:s;display:grid;gap:10px;padding:0;margin:0;list-style:none}
+.steps li{counter-increment:s;position:relative;padding:12px 14px 12px 54px;background:var(--card);border:1px solid var(--line);border-radius:12px}
+.steps li::before{content:counter(s);position:absolute;left:14px;top:11px;width:28px;height:28px;border-radius:50%;background:var(--ink);color:#0b0b0b;display:grid;place-items:center;font:700 14px Galmuri,monospace}
+.note{background:var(--paper);color:#141414;border-radius:3px;padding:16px 18px;transform:rotate(-1deg);box-shadow:0 10px 18px #0009;font:15px/1.6 Galmuri,monospace;margin-top:14px}
+code{background:#1f1f1e;border:1px solid var(--line);border-radius:6px;padding:1px 7px;font-size:14px}
+footer{margin-top:60px;color:var(--mute);font-size:13px;border-top:1px solid var(--line);padding-top:16px}
+footer a{color:var(--sub)}
+@media (max-width:640px){.grid2{grid-template-columns:1fr}}
+
+</style></head><body><div class="wrap">
+<header><div class="logo px">DESK</div><div class="pill px">WINDOWS 10 · 11 · 무료</div></header>
+
+<h1 class="px">클릭 한 번에<br>내 앱들이 흑백 턴테이블로</h1>
+<p class="lead">내가 쓰던 바탕화면을 누구나 바로 쓸 수 있게 만든 거예요. <b>설치.bat</b> 한 번 누르면 내 바탕화면 앱들이 알아서 이 디자인으로 싹 바뀌어요.</p>
+<div class="chips"><span>설치.bat 한 번</span><span>앱 아이콘 자동</span><span>메모 3종</span><span>전기 아끼기</span><span>지우면 원래대로</span></div>
+<div class="hero"><img src="1-desk.png" alt="바탕화면 전체 모습"></div>
+<a class="btn" href="https://github.com/casajeon-wq/desk">↓ 받으러 가기 (GitHub · Download ZIP)</a>
+
+
+<section><h2><i class="px">1</i>깔면 알아서 되는 것</h2>
+<ul class="list">
+<li>움직이는 배경 프로그램(<b>Lively</b>)이 없으면 같이 깔아 줘요</li>
+<li>원래 바탕화면 아이콘은 숨기고(파일은 그대로) <b>흑백 아이콘으로 싹</b> 바꿔요</li>
+<li>카톡·롤·스팀 같은 <b>흔한 앱 300개쯤은 전용 디자인</b>, 처음 보는 앱은 원래 아이콘을 흑백으로</li>
+<li>글쓰기 / AI / 영상 / 도구로 알아서 묶어요</li>
+<li><b>자주 쓰는 앱일수록 더 밝고 앞쪽</b>에 와요</li>
+<li>새로 깐 앱도 알아서 들어와요</li>
+</ul>
+<div class="grid2">
+<figure><img src="3-icons.png" alt="아이콘 밝기"><figcaption>자주 쓰는 앱일수록 밝게</figcaption></figure>
+<figure><img src="4-sep.png" alt="진짜 아이콘을 흑백으로"><figcaption>처음 보는 앱 = 진짜 아이콘(위) → 흑백(아래)</figcaption></figure>
+</div></section>
+
+<section><h2><i class="px">2</i>누르면 이렇게 돼요</h2>
+<div class="grid2">
+<ul class="list">
+<li><b>아이콘</b> — 마우스 올리면 통통 튀고(또잉), 누르면 앱이 켜져요</li>
+<li><b>턴테이블·재생 버튼</b> — 레코드판 멈춤 / 돌기</li>
+<li><b>◀ ▶ · 왼쪽 메뉴 · 분류 칸 · 사진 카드 · 섞기</b> — 앱 종류별로 보기</li>
+<li><b>시계·파형 막대</b> — 지금 시간 + 오늘 하루가 얼마나 지났는지</li>
+<li>앱이 많으면 <b>→ 다음</b>으로 넘기기, 문서는 맨 끝 <b>바탕화면</b> 칸으로 폴더 열기</li>
+</ul>
+<figure><img src="5-boing.gif" alt="또잉 움짤"><figcaption>마우스 올리면 또잉</figcaption></figure>
+</div></section>
+
+<section><h2><i class="px">3</i>바탕화면 메모</h2>
+<div class="grid2">
+<figure><img src="2-memo.png" alt="메모 세 종류"><figcaption>오른쪽 위 메모 버튼 → 종이 · 타일 · 라벨</figcaption></figure>
+<div>
+<ul class="list">
+<li>보통 메모장처럼 <b>끌어서 골라 지우기 · 복붙(Ctrl+C/V) · 되돌리기(Ctrl+Z)</b> 다 돼요</li>
+<li>끌어서 옮기고, <b>두 번</b> 눌러야 떼어져요</li>
+<li><b>치는 대로 자동 저장</b> — 컴 껐다 켜도 그대로</li>
+</ul>
+<figure style="margin-top:14px"><img src="6-memo.gif" alt="메모 쓰기 움짤"><figcaption>"안녕하세요 에활갤..." → 통째로 골라 지우고 → "아니 애용갤러들아"</figcaption></figure>
+</div></div></section>
+
+<section><h2><i class="px">4</i>전기 아끼기</h2>
+<ul class="list">
+<li>노트북 <b>충전기 뽑으면</b> 움직이는 효과만 멈춰요 (앱 켜기·메모는 그대로)</li>
+<li>게임이나 영상을 <b>전체 화면</b>으로 틀면 배경이 알아서 쉬어요</li>
+<li>바탕이 거의 검은색이라 <b>OLED 화면</b>이면 전기를 덜 먹어요</li>
+</ul></section>
+
+<section><h2><i class="px">5</i>설치 (3분)</h2>
+<ol class="steps">
+<li>위 <b>받으러 가기</b> → 초록색 <b>Code</b> 버튼 → <b>Download ZIP</b> → 압축 풀기</li>
+<li><b>설치.bat</b> 더블클릭 (파란 창 뜨면 <b>추가 정보 → 실행</b>, 관리자 창은 <b>예</b>)</li>
+<li>끝! <code>Win + D</code>로 바탕화면 보기</li>
+</ol>
+<div class="note">앱 직접 넣기: 맨 끝 '바탕화면' 칸 → 열린 폴더에 바로가기를 끌어다 놓기 → 20초쯤 뒤 아이콘이 생겨요</div>
+</section>
+
+<section><h2><i class="px">6</i>안전함? · 지우는 법</h2>
+<ul class="list">
+<li>내 컴 안에서만 돌아가서 <b>정보나 메모가 밖으로 안 나가요</b></li>
+<li>폴더 안 <b>제거.bat</b> 누르면 원래 바탕화면으로 싹 돌아오고, 쓴 메모는 문서 폴더에 따로 남아요</li>
+</ul></section>
+
+<footer>사진: 원작자에게 허락을 받았어요 · 글꼴 Galmuri · Pretendard (SIL OFL) · 3D three.js (MIT)</footer>
+</div></body></html>

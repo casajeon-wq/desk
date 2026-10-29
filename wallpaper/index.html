@@ -1,0 +1,502 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Desk Wallpaper</title>
+<style>
+@font-face{font-family:Galmuri;src:url(fonts/Galmuri11.woff2) format('woff2');font-weight:400}
+@font-face{font-family:Galmuri;src:url(fonts/Galmuri11-Bold.woff2) format('woff2');font-weight:700}
+@font-face{font-family:Pretendard;src:url(fonts/Pretendard-Regular.woff2) format('woff2');font-weight:400}
+@font-face{font-family:Pretendard;src:url(fonts/Pretendard-Medium.woff2) format('woff2');font-weight:500}
+@font-face{font-family:Pretendard;src:url(fonts/Pretendard-SemiBold.woff2) format('woff2');font-weight:600}
+@font-face{font-family:Pretendard;src:url(fonts/Pretendard-Bold.woff2) format('woff2');font-weight:700}
+/* 검은 판 하나뿐: OLED에서 검은 부분은 꺼져서 전기를 덜 쓴다 */
+:root{--paper:#0b0b0b;--ink:#ececE8;--mute:#5c5c59;--line:#dcdcd7;--soft:#2b2b29;--on:#0b0b0b;--tile:#141414;--sub:#8b8b87}
+body #grain{mix-blend-mode:screen;opacity:.035}
+body .tt{filter:drop-shadow(0 20px 30px #000c) drop-shadow(0 0 1px #fff3)}
+body .tile{box-shadow:0 3px 0 #555}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:100%;height:100%;overflow:hidden;background:var(--paper);user-select:none;cursor:default}
+body{font-family:Pretendard,sans-serif;color:var(--ink);-webkit-font-smoothing:antialiased}
+.px{font-family:Galmuri,monospace;-webkit-font-smoothing:none}
+#stage{position:absolute;left:50%;top:50%;width:1440px;height:900px;transform-origin:center;}
+#grain{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;opacity:.055;mix-blend-mode:multiply}
+/* 위 막대 */
+.logo{position:absolute;left:42px;top:34px;font-size:22px;font-weight:700;letter-spacing:.06em}
+.search{position:absolute;left:228px;top:28px;width:372px;height:36px;border:2px solid var(--line);border-radius:18px;display:flex;align-items:center;gap:10px;padding:0 14px;font-size:13px}
+.search svg{flex:none}
+.topicons{position:absolute;right:46px;top:30px;display:flex;gap:18px;align-items:center}
+.ava{cursor:pointer;width:34px;height:34px;border:2px solid var(--line);border-radius:6px;display:grid;place-items:center;background:var(--tile);color:var(--ink)}
+/* 왼쪽 세로 메뉴 */
+.side{position:absolute;left:44px;top:150px;display:flex;flex-direction:column;gap:30px}
+.side .ic{width:28px;height:28px;color:var(--mute);cursor:pointer;display:grid;place-items:center}
+.side .ic.on{color:var(--ink)}
+/* 턴테이블 */
+.tt{position:absolute;left:112px;top:106px;width:560px;height:402px;cursor:pointer;filter:drop-shadow(0 18px 26px #0000002e) drop-shadow(0 4px 6px #0000001f)}
+.tt3d{position:absolute;left:112px;top:106px;width:560px;height:402px;cursor:pointer;filter:drop-shadow(0 22px 26px #00000055)}
+.tt3d canvas{display:block;width:560px!important;height:402px!important}
+/* 사진·수채화 턴테이블 */
+.ttp{position:absolute;left:112px;top:106px;width:560px;height:402px;cursor:pointer}
+.ttp img,.ttp canvas{position:absolute;display:block}
+.ttp .pl{filter:drop-shadow(0 20px 26px #00000066)}
+.ttwc canvas{left:0;top:0;width:560px;height:402px}
+.ttwc{filter:drop-shadow(0 18px 24px #00000055)}
+.spin{animation:spin 3.6s linear infinite}
+.paused .spin{animation-play-state:paused}
+#disc{transform-origin:236px 205px;animation:spin 3.6s linear infinite}
+#arm{transform-origin:470px 92px;animation:arm 7s ease-in-out infinite}
+.paused #disc{animation-play-state:paused}
+.paused #arm{animation:none;transform:rotate(-17deg);transition:transform .8s}
+#led{animation:blink 2.4s steps(1) infinite}.paused #led{animation:none;opacity:.25}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes arm{0%,100%{transform:rotate(0)}50%{transform:rotate(.8deg)}}
+@keyframes blink{0%,70%{opacity:1}71%,100%{opacity:.35}}
+/* 지금 재생 중 = 지금 시각 */
+.now{position:absolute;left:112px;top:540px;width:560px}
+.now h1{font-size:50px;font-weight:700;letter-spacing:-.01em;line-height:1}
+.count{position:absolute;right:0;top:6px;display:flex;gap:10px;align-items:center;font-size:30px;font-weight:700}
+.count i{color:var(--on);width:30px;height:30px;background:var(--ink);border-radius:5px;display:grid;place-items:center}
+.tag{display:inline-block;margin-top:16px;background:var(--ink);color:var(--on);font-size:13px;padding:4px 14px;border-radius:12px;letter-spacing:.05em}
+.prog{position:absolute;left:112px;top:666px;width:560px;display:flex;align-items:center;gap:16px;font-size:20px;font-weight:700}
+.wave{flex:1;height:44px;display:flex;align-items:center;gap:3px}
+.wave b{flex:1;background:var(--soft);border-radius:2px;transition:background .3s}
+.wave b.on{background:var(--ink)}
+.ctl{position:absolute;left:112px;top:730px;width:560px;display:flex;justify-content:center;align-items:center;gap:44px}
+.ctl .b{cursor:pointer;display:grid;place-items:center;color:var(--ink)}
+.play{width:68px;height:68px;border-radius:50%;background:var(--ink);color:var(--on)!important}
+/* 오른쪽 */
+.cat-h{position:absolute;left:770px;top:96px;font-size:40px;font-weight:700;line-height:1.08}
+.viewall{position:absolute;left:1312px;top:136px;font-size:13px;font-weight:700;text-decoration:underline;text-underline-offset:4px;cursor:pointer}
+.chips{position:absolute;left:770px;top:198px;display:flex;gap:8px}
+.chip{border:2px solid var(--line);border-radius:14px;padding:3px 14px;font-size:13px;cursor:pointer;background:transparent}
+.chip.on{background:var(--ink);color:var(--on)}
+.cards{position:absolute;left:770px;top:240px;width:624px;display:flex;gap:12px}
+.card{width:147px;cursor:pointer}
+.card .ph{width:147px;height:178px;overflow:hidden;border-radius:4px;background:#bbb;outline:0 solid var(--ink);transition:outline-width .15s}
+.card.on .ph{outline-width:3px;outline-offset:3px}
+.card img{width:100%;height:100%;object-fit:cover;filter:grayscale(1) contrast(1.05);animation:kb 22s ease-in-out infinite alternate}
+.card:nth-child(2) img{animation-delay:-6s}.card:nth-child(3) img{animation-delay:-12s}.card:nth-child(4) img{animation-delay:-17s}
+@keyframes kb{from{transform:scale(1) translate(0,0)}to{transform:scale(1.1) translate(-3%,2%)}}
+.card .nm{text-align:center;font-size:13px;font-weight:700;margin-top:8px}
+.card .by{text-align:center;font-size:11px;color:var(--sub);margin-top:2px}
+.apps-h{position:absolute;left:770px;top:494px;font-size:22px;font-weight:700}
+.grid{position:absolute;left:764px;top:534px;width:630px;display:grid;grid-template-columns:repeat(9,70px);row-gap:8px}
+.app{display:flex;flex-direction:column;align-items:center;cursor:pointer;padding-top:4px}
+.tile{width:58px;height:58px;border:2px solid var(--line);border-radius:15px;background:var(--tile);display:grid;place-items:center;color:var(--ink);transform-origin:50% 100%;box-shadow:0 3px 0 var(--line)}
+.app:hover .tile{background:var(--ink);color:var(--on)}
+.app.press .tile{transform:scale(.88)}
+.app .lb{font-size:10.5px;font-weight:500;margin-top:7px;max-width:68px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.app.hide{display:none}
+/* 자주 쓰는 AI 앱: 1단계가 가장 밝고, 3단계로 갈수록 배경색에 가까워진다 */
+.app.t1 .tile{background:#d2d2ce;color:#0b0b0b;border-color:#0b0b0b;box-shadow:0 3px 0 #000}
+.app.t2 .tile{background:#8e8e8a;color:#0b0b0b;border-color:#0b0b0b;box-shadow:0 3px 0 #000}
+.app.t3 .tile{background:#4a4a47;color:#ececE8;border-color:#0b0b0b;box-shadow:0 3px 0 #000}
+.app.t1:hover .tile,.app.t2:hover .tile,.app.t3:hover .tile{background:var(--ink);color:var(--on)}
+.app.t1 .lb,.app.t2 .lb{font-weight:700}
+/* 4단계(테두리만): 테두리·그림자를 가늘게 */
+body .app:not(.t1):not(.t2):not(.t3) .tile{border-width:1.5px;box-shadow:0 2px 0 #3a3a38;background:#151514} /* 순검정보다 살짝 띄우면 테두리가 덜 튐 */
+/* 그 사람 앱의 진짜 아이콘을 색 분리한 그림(마스크) — 글자색(currentColor)으로 칠해서 선 아이콘처럼 단계 색을 따라간다 */
+.pic{width:30px;height:30px;background:currentColor;-webkit-mask:var(--m) center/contain no-repeat;mask:var(--m) center/contain no-repeat}
+/* 아이콘을 못 뽑은 앱 = 첫 글자 */
+.ltr{font-size:20px;font-weight:700;line-height:1}
+/* 앱이 한 판(27칸)보다 많으면 마지막 칸이 '다음 판' */
+.app.more .tile{border-style:dashed}
+/* 또잉! */
+.boing{animation:boing .62s cubic-bezier(.3,.7,.4,1)}
+.chip.boing{animation-name:boing-half}
+@keyframes boing-half{0%{transform:translateY(0) scale(1,1)}18%{transform:translateY(-8px) scale(.96,1.05)}38%{transform:translateY(0) scale(1.07,.92)}54%{transform:translateY(-3.5px) scale(.985,1.02)}70%{transform:translateY(0) scale(1.025,.975)}85%{transform:translateY(-1px) scale(1,1)}100%{transform:translateY(0) scale(1,1)}}
+@keyframes boing{0%{transform:translateY(0) scale(1,1)}18%{transform:translateY(-16px) scale(.92,1.1)}38%{transform:translateY(0) scale(1.14,.84)}54%{transform:translateY(-7px) scale(.97,1.04)}70%{transform:translateY(0) scale(1.05,.95)}85%{transform:translateY(-2px) scale(1,1)}100%{transform:translateY(0) scale(1,1)}}
+#toast{position:absolute;left:50%;top:84px;transform:translate(-50%,-14px);opacity:0;background:var(--ink);color:var(--on);font-size:13px;padding:8px 16px;border-radius:16px;transition:.25s;pointer-events:none}
+#toast.show{opacity:1;transform:translate(-50%,0)}
+</style>
+<link rel="stylesheet" href="notes.css"></head>
+<body>
+<div id="stage">
+  <div class="logo px" id="logo">DESK</div>
+  <div class="search px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 5 5"/></svg><span id="today"></span></div>
+  <div class="topicons">
+    <svg class="nadd" id="nadd" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><title>메모 붙이기</title><path d="M4 4h16v10l-6 6H4z"/><path d="M14 20v-6h6"/><path d="M9 8v6M6 11h6"/></svg>
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="14" rx="1"/><path d="m3 6 9 7 9-7"/></svg>
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 17V11a6 6 0 0 1 12 0v6l2 2H4z"/><path d="M10 21h4"/></svg>
+    <div class="ava"><svg width="22" height="22" viewBox="0 0 8 8" shape-rendering="crispEdges"><path fill="currentColor" d="M2 1h4v1H2zM1 2h1v4H1zM6 2h1v4H6zM2 6h4v1H2zM3 3h1v1H3zM5 3h1v1H5zM3 5h2v1H3z"/></svg></div>
+  </div>
+  <div class="side" id="side"></div>
+
+  <svg class="tt" id="tt" viewBox="0 0 560 402">
+    <defs>
+      <linearGradient id="metal" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fbfbfb"/><stop offset=".45" stop-color="#d6d6d6"/><stop offset=".7" stop-color="#ececec"/><stop offset="1" stop-color="#b9b9b9"/></linearGradient>
+      <linearGradient id="edge" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffffff"/><stop offset="1" stop-color="#8f8f8f"/></linearGradient>
+      <radialGradient id="vinyl" cx=".5" cy=".5" r=".5"><stop offset=".3" stop-color="#202020"/><stop offset=".95" stop-color="#0d0d0d"/><stop offset="1" stop-color="#1c1c1c"/></radialGradient>
+      <radialGradient id="knob" cx=".35" cy=".3" r=".8"><stop offset="0" stop-color="#ffffff"/><stop offset=".5" stop-color="#c9c9c9"/><stop offset="1" stop-color="#7d7d7d"/></radialGradient>
+      <linearGradient id="sheen" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset=".5" stop-color="#fff" stop-opacity=".16"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>
+    </defs>
+    <rect x="2" y="2" width="556" height="398" rx="20" fill="url(#edge)"/>
+    <rect x="7" y="7" width="546" height="388" rx="16" fill="url(#metal)"/>
+    <g fill="url(#knob)" stroke="#7a7a7a" stroke-width=".8"><circle cx="24" cy="24" r="5"/><circle cx="536" cy="24" r="5"/><circle cx="24" cy="378" r="5"/><circle cx="536" cy="378" r="5"/></g>
+    <!-- 플래터 가장자리의 점 무늬 -->
+    <circle cx="236" cy="205" r="178" fill="#8c8c8c"/>
+    <circle cx="236" cy="205" r="175" fill="#1a1a1a"/>
+    <g id="disc">
+      <circle cx="236" cy="205" r="171" fill="none" stroke="#c9c9c9" stroke-width="5" stroke-dasharray="1.6 3.4"/>
+      <circle cx="236" cy="205" r="163" fill="url(#vinyl)"/>
+      <g fill="none" stroke="#2c2c2c" stroke-width=".9">
+        <circle cx="236" cy="205" r="155"/><circle cx="236" cy="205" r="146"/><circle cx="236" cy="205" r="139"/><circle cx="236" cy="205" r="128"/><circle cx="236" cy="205" r="121"/><circle cx="236" cy="205" r="110"/><circle cx="236" cy="205" r="101"/><circle cx="236" cy="205" r="92"/><circle cx="236" cy="205" r="80"/><circle cx="236" cy="205" r="70"/>
+      </g>
+      <circle cx="236" cy="205" r="58" fill="#e9e4d8"/>
+      <circle cx="236" cy="205" r="58" fill="none" stroke="#bdb6a6" stroke-width="1"/>
+      <text x="236" y="187" text-anchor="middle" class="px" font-size="9" fill="#555" id="lblTop">SIDE A</text>
+      <text x="236" y="230" text-anchor="middle" class="px" font-size="10" fill="#333">33⅓ RPM</text>
+      <rect x="196" y="236" width="80" height="2" fill="#c33"/>
+    </g>
+    <circle cx="236" cy="205" r="4" fill="url(#knob)"/>
+    <!-- 빛 반사: 판이 돌아도 빛은 그대로 -->
+    <path d="M236 205 L120 70 A170 170 0 0 1 180 46 Z" fill="url(#sheen)"/>
+    <path d="M236 205 L352 340 A170 170 0 0 1 292 364 Z" fill="url(#sheen)" opacity=".7"/>
+    <!-- 톤암 -->
+    <g id="arm">
+      <circle cx="470" cy="92" r="34" fill="url(#knob)" stroke="#8a8a8a"/>
+      <circle cx="470" cy="92" r="20" fill="#5c5c5c"/>
+      <circle cx="470" cy="92" r="13" fill="url(#knob)"/>
+      <rect x="486" y="40" width="22" height="30" rx="4" fill="#3b3b3b" transform="rotate(35 497 55)"/>
+      <path d="M470 92 L452 262 L386 336" fill="none" stroke="#e8e8e8" stroke-width="7" stroke-linecap="round"/>
+      <path d="M470 92 L452 262 L386 336" fill="none" stroke="#9a9a9a" stroke-width="2" stroke-linecap="round"/>
+      <g transform="rotate(42 384 340)"><rect x="366" y="330" width="40" height="22" rx="3" fill="#cfcfcf" stroke="#7d7d7d"/><path d="M370 334h32M370 340h32M370 346h32" stroke="#8d8d8d"/></g>
+    </g>
+    <!-- 오른쪽 손잡이, 슬라이더, 버튼 -->
+    <circle cx="500" cy="300" r="15" fill="url(#knob)" stroke="#8a8a8a"/>
+    <rect x="488" y="160" width="6" height="90" rx="3" fill="#9a9a9a"/><rect x="482" y="196" width="18" height="12" rx="2" fill="url(#knob)" stroke="#888"/>
+    <rect x="498" y="340" width="16" height="22" rx="3" fill="#4a4a4a"/>
+    <circle cx="44" cy="350" r="16" fill="url(#knob)" stroke="#8a8a8a"/>
+    <rect id="led" x="56" y="318" width="8" height="3" rx="1" fill="#e2352f"/>
+  </svg>
+
+  <div class="tt3d" id="tt3d"></div>
+
+  <div class="now"><h1 class="px" id="clock"></h1><div class="count px"><i><svg width="18" height="18" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path d="M12 5v14M5 12h14"/></svg></i><span id="doy"></span></div><span class="tag px" id="dow"></span></div>
+  <div class="prog px"><span id="elapsed"></span><div class="wave" id="wave"></div><span>24:00</span></div>
+  <div class="ctl">
+    <div class="b" data-act="prev"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M4 10V4h6M20 14v6h-6M4 4l6 6M20 20l-6-6"/></svg></div>
+    <div class="b" data-act="prev"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M18 5 8 12l10 7zM6 5v14"/></svg></div>
+    <div class="b play" data-act="play" id="playBtn"></div>
+    <div class="b" data-act="next"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="m6 5 10 7-10 7zM18 5v14"/></svg></div>
+    <div class="b" data-act="shuffle"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M3 6h4l10 12h4M3 18h4l3-3.6M14 9.6 17 6h4M18 3l3 3-3 3M18 15l3 3-3 3"/></svg></div>
+  </div>
+
+  <div class="cat-h px">Desk<br>Categories</div>
+  <div class="viewall px" data-g="all">View all</div>
+  <div class="chips px" id="chips"></div>
+  <div class="cards" id="cards"></div>
+  <div class="apps-h px" id="appsH"></div>
+  <div class="grid" id="grid"></div>
+  <div class="npick" id="npick"><div class="pA" data-s="A">A 종이</div><div class="pB" data-s="B">B 타일</div><div class="pC" data-s="C">C 라벨</div></div>
+  <div id="notes"></div>
+  <div id="kb" tabindex="-1" aria-hidden="true" style="position:absolute;left:-9999px;top:0;width:1px;height:1px;outline:none"></div>
+  <div id="toast" class="px"></div>
+</div>
+<canvas id="grain"></canvas>
+<script src="apps.js"></script>
+<script src="icons.js"></script>
+<script src="icons-common.js"></script>
+<script src="hangul.js"></script>
+<script src="note-editor.js"></script>
+<script>
+// 배포판은 어두운 판 하나만(검은 바탕 + 은색 사진 턴테이블). 오른쪽 위 네모는 모양만 남김
+const HELPER='http://127.0.0.1:'+(DESK.port||47331); // 실행 도우미(설치할 때 시작프로그램에 들어감)
+const THEME='dark';
+// 숨긴 앱(hidden)은 배경에 안 띄운다
+const APPS=DESK.apps.filter(a=>!a.hidden);
+const GROUPS=[['all','전체','home'],['write','글쓰기','pen'],['ai','AI','spark'],['film','영상','film'],['tool','도구','wrench']];
+const CARDS=[['write','글쓰기 방','writing'],['ai','AI 작업실','ai'],['film','미디어 편집실','film'],['tool','도구 서랍','tools']];
+let cur='all';const $=id=>document.getElementById(id);
+const ico=(k,s=28)=>`<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">${ICONS[k]||ICONS.folder}</svg>`;
+
+// 화면 크기에 맞춰 1440×900 무대를 늘리고 줄인다. 16:9 모니터에서도 위아래가 안 잘리게 무대 전체가 보이는 쪽(min)으로
+const stageScale=()=>Math.min(innerWidth/1440,innerHeight/900);
+function fit(){const s=stageScale();$('stage').style.transform=`translate(-50%,-50%) scale(${s})`}
+addEventListener('resize',fit);fit();
+
+$('side').innerHTML=GROUPS.map(([g,n,k])=>`<div class="ic" data-g="${g}" title="${n}">${ico(k,26)}</div>`).join('');
+$('chips').innerHTML=GROUPS.map(([g,n])=>`<div class="chip" data-g="${g}">${n}</div>`).join('');
+$('cards').innerHTML=CARDS.map(([g,n,img])=>`<div class="card" data-g="${g}"><div class="ph"><img src="img/${img}.jpg" onerror="this.style.display='none'"></div><div class="nm px">${n}</div><div class="by">앱 ${APPS.filter(a=>a.group===g).length}개</div></div>`).join('');
+$('wave').innerHTML='<b></b>'.repeat(64);
+$('logo').textContent=DESK.logo||'MY·DESK';
+
+// 색 분리: 그 사람 앱의 진짜 아이콘(설치할 때 data:로 넣어 둠) → 바탕색을 빼고 밝기를 두 단으로 나눈 흑백 마스크.
+// 마스크라서 선 아이콘처럼 글자색으로 칠해지고, 밝기 단계·마우스 올림 색을 그대로 따라간다.
+const SEP={};
+function sepIcon(a){
+  if(SEP[a.id])return Promise.resolve(SEP[a.id]);
+  return new Promise(ok=>{const im=new Image();im.onerror=()=>ok(null);im.onload=()=>{try{
+    const N=64,c=document.createElement('canvas');c.width=c.height=N;const x=c.getContext('2d');x.drawImage(im,0,0,N,N);
+    const d=x.getImageData(0,0,N,N),p=d.data,px=k=>[p[k],p[k+1],p[k+2],p[k+3]];
+    // 바탕 찾기: 가장자리에서 4px 안쪽 테두리가 거의 한 가지 색으로 꽉 차 있으면 그게 아이콘 바탕(둥근 네모 판)
+    const ring=[];for(let i=4;i<N-4;i++)ring.push([i,4],[i,N-5],[4,i],[N-5,i]);
+    const op=ring.map(([u,v])=>px((v*N+u)*4)).filter(q=>q[3]>200);
+    let bg=null;
+    if(op.length>ring.length*.6){const m=[0,1,2].map(j=>op.reduce((s,q)=>s+q[j],0)/op.length);
+      const spread=op.reduce((s,q)=>s+Math.hypot(q[0]-m[0],q[1]-m[1],q[2]-m[2]),0)/op.length;if(spread<40)bg=m}
+    const lum=q=>.299*q[0]+.587*q[1]+.114*q[2],dist=q=>bg?Math.hypot(q[0]-bg[0],q[1]-bg[1],q[2]-bg[2]):0;
+    const keep=[];for(let k=0;k<p.length;k+=4){const q=px(k);if(q[3]<90||(bg&&dist(q)<55))continue;keep.push(k)}
+    if(bg&&keep.length<N*N*.04){bg=null;keep.length=0;for(let k=0;k<p.length;k+=4)if(p[k+3]>=90)keep.push(k)} // 바탕을 빼니 남는 게 없으면 바탕째로
+    if(!keep.length)return ok(null); // 다 투명 → 첫 글자 칸으로
+    // 두 단으로 나누기: 바탕과 많이 다른 부분(바탕이 없으면 밝은 부분) = 2, 나머지 = 1, 빈 곳 = 0
+    // 사진 같은 아이콘은 자글자글해지니 먼저 살짝 흐려서(5×5 평균) 큰 덩어리만 남긴다
+    const raw=new Float32Array(N*N),on=new Uint8Array(N*N);for(const k of keep){raw[k>>2]=bg?dist(px(k)):lum(px(k));on[k>>2]=1}
+    const sm=new Float32Array(N*N);
+    for(let y=0;y<N;y++)for(let u=0;u<N;u++){if(!on[y*N+u])continue;let s=0,n=0;for(let dy=-2;dy<=2;dy++)for(let dx=-2;dx<=2;dx++){const yy=y+dy,uu=u+dx;if(yy>=0&&uu>=0&&yy<N&&uu<N&&on[yy*N+uu]){s+=raw[yy*N+uu];n++}}sm[y*N+u]=s/n}
+    const sc=keep.map(k=>sm[k>>2]).sort((a,b)=>a-b),mid=sc[sc.length>>1]||0;
+    const cls=new Uint8Array(N*N);for(const k of keep)cls[k>>2]=sm[k>>2]>=mid?2:1;
+    // 선 아이콘처럼: 칸이 바뀌는 경계(테두리·무늬 윤곽)는 진한 선, 안쪽은 옅게 칠한다
+    const o=x.createImageData(N,N);
+    for(let y=0;y<N;y++)for(let u=0;u<N;u++){const i=y*N+u,cv=cls[i];if(!cv)continue;let edge=false;
+      for(let dy=-2;dy<=2&&!edge;dy++)for(let dx=-2;dx<=2;dx++){if(dx*dx+dy*dy>5)continue;const yy=y+dy,uu=u+dx;if((yy<0||uu<0||yy>=N||uu>=N?0:cls[yy*N+uu])!==cv){edge=true;break}}
+      const k=i*4;o.data[k]=o.data[k+1]=o.data[k+2]=255;o.data[k+3]=edge?255:cv===2?110:34}
+    x.putImageData(o,0,0);ok(SEP[a.id]=c.toDataURL());
+  }catch(e){ok(null)}};im.src=a.img});
+}
+// 바로가기 이름에 < > & " 가 있어도 화면이 깨지지 않게
+const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const first=a=>esc([...(a.name||'?')][0].toUpperCase());
+function tileHTML(a){
+  if(a.icon&&ICONS[a.icon])return ico(a.icon);
+  if(a.img)return `<span class="pic" data-sep="${a.id}"></span>`;
+  return `<span class="ltr px">${first(a)}</span>`;
+}
+// 한 판 = 9칸×3줄. 넘치면 26개 + 마지막 칸 '다음 판'
+const PAGE=27;let page=0;
+function renderGrid(list){
+  let show=list,more=null;
+  if(list.length>PAGE){const per=PAGE-1,pages=Math.ceil(list.length/per);page%=pages;show=list.slice(page*per,page*per+per);more={n:page+1,of:pages}}
+  $('grid').innerHTML=show.map(a=>`<div class="app${a.tier?' t'+a.tier:''}" data-id="${esc(a.id)}" data-group="${esc(a.group)}" title="${esc(a.name)}${a.sub?' · '+esc(a.sub):''}"><div class="tile">${tileHTML(a)}</div><div class="lb">${esc(a.name)}</div></div>`).join('')
+    +(more?`<div class="app more" title="다음 판"><div class="tile">${ico('next',26)}</div><div class="lb">${more.n}/${more.of} 다음</div></div>`:'');
+  $('grid').querySelectorAll('[data-sep]').forEach(el=>{const a=APPS.find(x=>x.id===el.dataset.sep);sepIcon(a).then(u=>{if(u)el.style.setProperty('--m',`url(${u})`);else el.outerHTML=`<span class="ltr px">${first(a)}</span>`})});
+}
+
+function setGroup(g,keepPage){
+  if(!keepPage||g!==cur)page=0;
+  cur=g;
+  document.querySelectorAll('[data-g]').forEach(e=>e.classList.toggle('on',e.dataset.g===g));
+  const list=APPS.filter(a=>g==='all'||a.group===g);renderGrid(list);
+  $('appsH').textContent=`${g==='all'?'즐겨 쓰는 앱':GROUPS.find(x=>x[0]===g)[1]+' 앱'} (${list.length})`;
+}
+document.addEventListener('click',e=>{const t=e.target.closest('[data-g]');if(t)setGroup(t.dataset.g)});
+setGroup('all');
+
+// 또잉: 마우스를 올릴 때마다 처음부터 다시 튄다
+function boing(el){el.classList.remove('boing');void el.offsetWidth;el.classList.add('boing')}
+document.addEventListener('mouseover',e=>{
+  const t=e.target.closest('.app,.side .ic,.chip,.ctl .b,.ava');if(!t||t.contains(e.relatedTarget))return;
+  boing(t.querySelector('.tile')||t);
+});
+document.addEventListener('animationend',e=>e.target.classList.remove('boing'));
+
+function toast(m){const t=$('toast');t.textContent=m;t.className='show px';clearTimeout(t.h);t.h=setTimeout(()=>t.className='px',1800)}
+// 바탕화면 메모: + → 모양 고르기(A/B/C) → 빈자리에 붙고 바로 쓰기. 끌어서 옮기고, 떼기는 두 번 눌러야 사라짐.
+// 저장은 실행 도우미의 notes.json 파일(전원 꺼도 남음). 위치는 무대(1440×900) 좌표로 저장해서 화면 배율이 바뀌어도 같은 자리.
+const NOTE_URL=HELPER;
+let NOTES=[],noteSig='';
+const nEsc=s=>String(s||'').replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+// 빈 메모에 뜨는 임티. 메모마다 하나로 고정(id로 고름)해서 새로고침해도 안 바뀜
+const NOTE_EMPTY=['(｡•ᴗ•｡)','ʕ•ᴥ•ʔ','( ˘ω˘ )','(๑˃ᴗ˂)ﻭ','( ・∀・)','(っ˘ڡ˘ς)',
+  '( ˘▽˘)っ♪','♪ ~ ( ˘ ³˘)','(*´▽`*)♬','⊙﹏⊙ ✎','₍ᐢ•ﻌ•ᐢ₎ ♪',
+  '✎','☁︎','☾','✧','♡'];
+const noteEmpty=n=>NOTE_EMPTY[[...n.id].reduce((a,c)=>a+c.charCodeAt(0),0)%NOTE_EMPTY.length];
+function noteDate(n){const d=new Date(n.created);return `${d.getMonth()+1}/${d.getDate()}`}
+function renderNotes(){
+  $('notes').innerHTML=NOTES.map((n,i)=>{
+    const s=['A','B','C'].includes(n.style)?n.style:'A',rot=s==='A'?`transform:rotate(${+n.rot||0}deg);`:'';
+    const head=s==='B'?`<div class="nh">MEMO ${String(i+1).padStart(2,'0')}<i>${noteDate(n)}</i></div>`:s==='C'?`<div class="nh">SIDE ${i%2?'B':'A'} · ${String(i+1).padStart(2,'0')}</div>`:'';
+    const tail=s==='A'?`<span class="nd">${noteDate(n)}</span>`:'';
+    const tools=s==='B'?'<b data-a="edit">✎</b><b data-a="del">✕</b>':'<b data-a="edit">고치기</b><b data-a="del">떼기</b>';
+    return `<div class="note s${s}" data-id="${esc(n.id)}" style="left:${+n.x||0}px;top:${+n.y||0}px;${rot}">${head}<div class="tx">${nEsc(n.text)||`<span class="emp">${noteEmpty(n)}</span>`}</div>${tail}<div class="nt">${tools}</div></div>`;
+  }).join('');
+}
+// 여러 모니터면 배경 창이 여러 개 → 서로 덮어쓰지 않게:
+// noteRev = 화면의 NOTES를 읽어 온 판. 내용과 판 번호는 늘 같이 바꾼다(편집·끌기 중엔 둘 다 그대로).
+// noteReady = 처음 읽기에 성공해야 메모를 붙이거나 고칠 수 있음(빈 목록으로 기존 메모를 덮는 것 방지).
+// 저장은 한 번에 하나씩: 저장 중에 또 바뀌면 끝난 뒤 이어서 저장. noteDirty = 아직 못 올린 변경 있음.
+// noteGen = 읽기 도중 편집·저장이 있었으면 그 읽기 결과는 버림(늦게 온 옛 목록이 방금 쓴 글을 덮지 않게).
+// noteStale = 편집 중에 다른 화면 내용을 합쳤음 → 편집이 끝나고 손 뗐을 때 전체를 다시 그림.
+let noteRev='',noteDirty=false,noteReady=false,noteSaving=false,noteGen=0,noteStale=false;
+// 합칠 때 쓰는 기록: noteGone = 내가 뗀 메모 id · noteTouch = 내가 바꿨는데 아직 저장 확인 못 받은 것(메모 id → 바꾼 칸 text/pos/new + 차례 번호).
+// 다른 화면과 겹치면 그쪽 판을 바탕으로 '내가 바꾼 칸만' 덮는다 → 저쪽은 글, 나는 위치만 바꿨으면 둘 다 살아남음
+let noteGone=new Set();const noteTouch=new Map(); // id → Map(칸 → 차례 번호). 칸마다 따로 세서, 저장이 확인된 칸만 지운다
+let touchSeq=0;function touchNote(id,f){const t=noteTouch.get(id)||new Map();t.set(f,++touchSeq);noteTouch.set(id,t)}
+const noteBusy=()=>{try{if(nDrag)return true}catch{}return !!(ED||document.querySelector('.note.drag'))}; // nDrag는 아래에서 선언
+async function loadNotes(){
+  if(noteDirty){if(!noteSaving)saveNotes();return}
+  if(noteBusy()||noteSaving)return;
+  if(noteStale){noteStale=false;renderNotes()}
+  const gen=noteGen;
+  try{const res=await fetch(NOTE_URL+'/notes?t='+DESK.token);if(!res.ok)return;const r=await res.json();
+    if(gen!==noteGen||noteBusy()||noteSaving||noteDirty)return; // 받는 사이 편집·저장이 있었으면 버림
+    noteReady=true;if(r.rev===noteRev)return;
+    noteRev=r.rev;NOTES=r.notes;noteSig=JSON.stringify(NOTES);renderNotes()}catch{}
+}
+// 바로 쓰기: 메모를 한 번 누르면 그 자리에서 글자 입력.
+// Lively 입력 넘기기를 '마우스+키보드'(Settings.json InputForward=2)로 바꿔야 키보드가 들어옴. 바깥을 누르거나 Esc·Ctrl+Enter면 저장.
+// 한글은 윈도우 입력기를 안 거치고 hangul.js가 직접 조합(Lively로 넘어온 키에 "qhqk"가 섞이던 문제). 가/A 표시를 누르거나 한/영 키로 바꿈.
+// 메모 편집은 note-editor.js가 맡는다(보통 메모장처럼: 누른 자리에 커서, 끌어서 글자 고르기 → Backspace·타자로 지우기/바꿔 쓰기,
+// 화살표·Shift·Home/End, Ctrl+A/C/X/V/Z/Y). 여기서는 편집 중인지(ED)만 이어 받는다.
+let ED=null;
+// 편집이 끝나면 그 메모 하나만 원래 모양으로(전체를 다시 그리면 같은 순간 누른 다른 메모가 사라져 끌기가 꼬임)
+NoteEd.onSave=n=>{touchNote(n.id,'text');saveNotes()};NoteEd.onToast=m=>toast(m);
+NoteEd.onEnd=(el,n)=>{ED=null;if(!el||!el.isConnected)return renderNotes();el.classList.remove('editing');el.querySelector('.km')?.remove();
+  const tx=el.querySelector('.tx');tx.innerHTML=nEsc(n.text)||`<span class="emp">${noteEmpty(n)}</span>`;tx.scrollTop=0};
+function editNote(id,at){if(!noteReady){toast('메모를 불러오는 중이에요');return}
+  noteGen++;const el=document.querySelector(`.note[data-id="${id}"]`),n=NOTES.find(x=>x.id===id);if(!el||!n)return;
+  NoteEd.start(el,n,at);ED=NoteEd.active}
+function finishEdit(){NoteEd.finish()}
+async function saveNotes(){
+  noteDirty=true;noteGen++;if(!noteReady||noteSaving)return; // 저장 중이면 끝난 뒤 아래 반복에서 이어서 저장
+  noteSaving=true;let tries=0;
+  try{
+    while(noteDirty&&tries++<5){
+      noteDirty=false; // 보내는 사이 또 바뀌면 saveNotes가 다시 true로 → 한 번 더 돈다
+      const body=JSON.stringify(NOTES),sentGone=[...noteGone],sentTouch=[...noteTouch].map(([id,t])=>[id,new Map(t)]);
+      const res=await fetch(NOTE_URL+'/notes?t='+DESK.token+'&rev='+encodeURIComponent(noteRev),{method:'POST',body});const r=await res.json().catch(()=>({}));
+      if(res.ok){ // 보낸 것까지만 '저장 확인'. 보내는 사이 또 바꾼 메모는 기록을 남겨 둔다
+        noteRev=r.rev;noteSig=body;sentGone.forEach(id=>noteGone.delete(id));
+        for(const [id,sent] of sentTouch){const t=noteTouch.get(id);if(!t)continue;for(const [f,v] of sent)if(t.get(f)===v)t.delete(f);if(!t.size)noteTouch.delete(id)}continue}
+      if(res.status===409){
+        // 다른 화면이 먼저 저장함 → 그쪽 판을 바탕으로, 내가 바꾼 칸(글·위치)과 새로 붙인 메모만 다시 얹는다.
+        // 내가 고친 메모가 그쪽에서 지워졌으면 살려 둔다(쓰던 글이 사라지지 않게). 지금 쓰는 메모는 같은 객체를 계속 씀.
+        const live=NoteEd.active&&NoteEd.active.n;
+        const theirs=(r.notes||[]).filter(x=>!noteGone.has(x.id)),ids=new Set(theirs.map(x=>x.id));
+        const merged=theirs.map(x=>{
+          const t=noteTouch.get(x.id),m=NOTES.find(y=>y.id===x.id);if(!m)return x;
+          if(t&&t.has('new'))return m;
+          const y=Object.assign({},x);
+          // 지금 쓰고 있는 메모의 글은 늘 내 것(편집 칸에 남은 글과 어긋나면 다음 자동 저장이 덮어써 버리니까)
+          if((t&&t.has('text'))||m===live){y.text=m.text;y.edited=m.edited}
+          if(t&&t.has('pos')){y.x=m.x;y.y=m.y}
+          return m===live?Object.assign(live,y):y;
+        }).concat(NOTES.filter(m=>!ids.has(m.id)&&(noteTouch.has(m.id)||m===live)));
+        noteRev=r.rev;NOTES=merged;noteDirty=true;
+        if(noteBusy())noteStale=true;else renderNotes();
+        toast('다른 화면에서 바뀐 메모와 합쳤어요');continue}
+      noteDirty=true;toast('메모 저장이 안 됐어요 · 잠시 뒤 다시 해 볼게요');break;
+    }
+  }catch{noteDirty=true;toast('실행 도우미가 꺼져 있어 저장이 안 돼요 · 켜지면 저장할게요')}
+  finally{noteSaving=false;noteGen++}
+}
+loadNotes();setInterval(loadNotes,4000);
+// 바탕화면 다시 읽기로 앱 목록이 바뀌면(도우미가 알려 주는 지문 rev가 다르면) 스스로 새로고침 — Lively 명령이 필요 없다
+// 같은 지문으로는 한 번만 새로고침(주소 뒤 #지문으로 기억) — 배경 폴더 복사가 실패해도 무한 새로고침 안 함
+setInterval(async()=>{try{const r=await (await fetch(HELPER+'/ping')).json();
+  if(r.rev&&DESK.rev&&r.rev!==DESK.rev&&!noteBusy()&&!noteDirty&&!noteSaving&&!noteTouch.size&&location.hash!=='#'+r.rev){location.hash=r.rev;location.reload()}}catch{}},10000); // 저장이 다 끝난 뒤에만
+// + → 모양 고르기(A 종이 · B 타일 · C 라벨) → 빈자리에 붙고 바로 쓰기
+$('nadd').addEventListener('click',e=>{e.stopPropagation();$('npick').classList.toggle('open')});
+document.addEventListener('click',e=>{if(!e.target.closest('#npick,#nadd'))$('npick').classList.remove('open')});
+$('npick').addEventListener('click',e=>{
+  const p=e.target.closest('[data-s]');if(!p)return;$('npick').classList.remove('open');
+  if(!noteReady){toast('메모를 불러오는 중이에요 · 실행 도우미가 켜져 있나 봐 주세요');return}
+  const k=NOTES.length%4,now=new Date().toISOString();
+  const n={id:'n'+Date.now().toString(36),style:p.dataset.s,x:960+(k%2)*230,y:700+Math.floor(k/2)*30+(k%2)*8,rot:[-2,3,-3,2][k],text:'',created:now,edited:now};
+  NOTES.push(n);touchNote(n.id,'new');renderNotes();saveNotes();
+  editNote(n.id);
+});
+$('notes').addEventListener('click',async e=>{
+  const b=e.target.closest('.nt b');if(!b)return;e.stopPropagation();
+  const id=b.closest('.note').dataset.id;
+  if(b.dataset.a==='edit'){editNote(id);return}
+  if(!b.classList.contains('sure')){b.classList.add('sure');const old=b.textContent;b.textContent='진짜?';setTimeout(()=>{b.classList.remove('sure');b.textContent=old},2500);return}
+  noteGone.add(id);NOTES=NOTES.filter(n=>n.id!==id);renderNotes();saveNotes();toast('메모를 뗐어요');
+});
+// 끌어서 옮기기: 화면 배율(fit)만큼 나눠서 무대 좌표로. 안 움직이고 떼면(=한 번 누르기) 바로 쓰기
+let nDrag=null;
+// 끌기: Lively로 넘어온 마우스는 붙잡기(pointer capture)가 잘 안 돼서, 빨리 끌면 커서가 메모 밖으로 빠져 멈췄다.
+// → 움직임·놓기는 창 전체에서 받는다. 4px 넘게 움직이면 끌기, 아니면 그 자리에서 쓰기. 쓰는 중인 메모도 끌 수 있음.
+$('notes').addEventListener('pointerdown',e=>{
+  const el=e.target.closest('.note');if(!el||e.target.closest('.nt,.km')||e.button>0)return;
+  const s=stageScale(),n=NOTES.find(x=>x.id===el.dataset.id);
+  nDrag={el,n,s,sx:e.clientX,sy:e.clientY,x:n.x,y:n.y,moved:false};
+});
+window.addEventListener('pointermove',e=>{
+  if(!nDrag)return;const dx=(e.clientX-nDrag.sx)/nDrag.s,dy=(e.clientY-nDrag.sy)/nDrag.s;
+  if(!nDrag.moved){if(Math.abs(dx)+Math.abs(dy)<4)return;nDrag.moved=true;if(ED&&ED.el===nDrag.el){finishEdit();nDrag.el=document.querySelector(`.note[data-id="${nDrag.n.id}"]`)}nDrag.el.classList.add('drag')}
+  const mw=nDrag.el.offsetWidth||200,mh=(nDrag.el.offsetHeight||100)+30; // 실제 메모 크기 + 아래 버튼 자리
+  nDrag.n.x=Math.max(0,Math.min(1440-mw,Math.round(nDrag.x+dx)));nDrag.n.y=Math.max(0,Math.min(900-mh,Math.round(nDrag.y+dy)));
+  nDrag.el.style.left=nDrag.n.x+'px';nDrag.el.style.top=nDrag.n.y+'px';
+});
+const nDrop=(ev)=>{if(!nDrag)return;const d=nDrag;nDrag=null;d.el.classList.remove('drag');if(d.moved){touchNote(d.n.id,'pos');saveNotes()}else editNote(d.n.id,ev&&{x:ev.clientX,y:ev.clientY})};
+window.addEventListener('pointerup',nDrop);window.addEventListener('pointercancel',()=>{if(nDrag){nDrag.el.classList.remove('drag');if(nDrag.moved){touchNote(nDrag.n.id,'pos');saveNotes()}nDrag=null}});
+
+$('grid').addEventListener('click',async e=>{
+  const el=e.target.closest('.app');if(!el)return;
+  el.classList.add('press');setTimeout(()=>el.classList.remove('press'),140);
+  if(el.classList.contains('more')){page++;setGroup(cur,true);return}
+  const a=DESK.apps.find(x=>x.id===el.dataset.id);
+  try{const r=await fetch(`${HELPER}/open?id=${a.id}&t=${DESK.token}`);toast(r.ok?`${a.name} 여는 중`:'바로가기를 찾지 못했어요')}
+  catch{toast('실행 도우미가 꺼져 있어요')}
+});
+
+// 재생/일시정지 = 레코드판 멈추기, 이전/다음/섞기 = 카테고리 넘기기
+let playing=true;
+const pIcon=()=>playing?'<svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="5" width="4" height="14"/><rect x="14" y="5" width="4" height="14"/></svg>':'<svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>';
+$('playBtn').innerHTML=pIcon();
+document.querySelector('.ctl').addEventListener('click',e=>{
+  const b=e.target.closest('.b');if(!b)return;const i=GROUPS.findIndex(x=>x[0]===cur);
+  if(b.dataset.act==='play'){playing=!playing;$('stage').classList.toggle('paused',!playing||window.ECO);b.innerHTML=pIcon()}
+  if(b.dataset.act==='next')setGroup(GROUPS[(i+1)%GROUPS.length][0]);
+  if(b.dataset.act==='prev')setGroup(GROUPS[(i+GROUPS.length-1)%GROUPS.length][0]);
+  if(b.dataset.act==='shuffle')setGroup(GROUPS[1+Math.floor(Math.random()*4)][0]);
+});
+$('tt').addEventListener('click',()=>$('playBtn').click());
+
+// 시계, 날짜, 하루 진행 막대
+const DOW=['SUNDAY','MONDAY','TUESDAY','WEDNESDAY','THURSDAY','FRIDAY','SATURDAY'],KDOW='일월화수목금토';
+function tick(){
+  const d=new Date(),h=d.getHours(),m=String(d.getMinutes()).padStart(2,'0');
+  $('clock').textContent=`${h<12?'오전':'오후'} ${h%12||12}:${m}`;
+  $('today').textContent=`${d.getFullYear()}년 ${d.getMonth()+1}월 ${d.getDate()}일 ${KDOW[d.getDay()]}요일`;
+  $('dow').textContent=DOW[d.getDay()];
+  $('doy').textContent=Math.floor((d-new Date(d.getFullYear(),0,0))/864e5);
+  $('elapsed').textContent=`${h}:${m}`;
+  $('lblTop').textContent=`${d.getMonth()+1}.${d.getDate()} ${DOW[d.getDay()].slice(0,3)}`;
+  const on=Math.round((h*60+d.getMinutes())/1440*64);
+  document.querySelectorAll('.wave b').forEach((b,i)=>b.classList.toggle('on',i<on));
+}
+tick();setInterval(tick,1000);
+
+// 파형: 천천히 숨 쉬듯 움직이는 막대
+const bars=[...document.querySelectorAll('.wave b')],seed=bars.map((_,i)=>.35+.65*Math.abs(Math.sin(i*1.7)*Math.cos(i*.45)));
+(function wave(t){
+  if(!window.ECO)bars.forEach((b,i)=>{const k=playing?.75+.25*Math.sin(t/420+i*.55)*Math.sin(t/900+i*.13):.6;b.style.height=Math.max(5,44*seed[i]*k)+'px'});
+  setTimeout(()=>requestAnimationFrame(wave),50);
+})(0);
+
+// 필름 입자: 화면 절반 해상도로 4장 미리 만들어 돌려 쓴다
+const g=$('grain'),gc=g.getContext('2d');g.width=Math.ceil(innerWidth/2);g.height=Math.ceil(innerHeight/2);
+const frames=[0,1,2,3].map(()=>{const im=gc.createImageData(g.width,g.height);for(let i=0;i<im.data.length;i+=4){const v=90+Math.random()*165;im.data[i]=im.data[i+1]=im.data[i+2]=v;im.data[i+3]=255}return im});
+let fi=0;setInterval(()=>{if(!window.ECO)gc.putImageData(frames[fi++%4],0,0)},120);
+
+// 배터리 절약: Lively가 배터리에서 통째로 멈추면 아이콘 클릭도 죽어서, Lively는 계속 돌리고 여기서 움직임만 멈춘다
+window.ECO=false;
+function setEco(on){window.ECO=on;document.body.classList.toggle('eco',on);$('stage').classList.toggle('paused',on||!playing)}
+if(navigator.getBattery)navigator.getBattery().then(bt=>{const f=()=>setEco(!bt.charging);f();bt.addEventListener('chargingchange',f)});
+</script>
+<style>.eco *,.eco *::before,.eco *::after{animation-play-state:paused!important}</style>
+<script src="lib/three.min.js"></script><script src="lib/RoomEnvironment.js"></script><script src="lib/RoundedBoxGeometry.js"></script>
+<script>
+// 턴테이블 방식 (svg | 3d | 3d-angle | photo | photo-angle | wc)
+// 주소 ?tt=… 가 있으면 그것만, 없으면 사진 턴테이블
+window.TT_FORCED=(location.search.match(/tt=([\w-]+)/)||[])[1]||null;
+window.TT_MODE=TT_FORCED||'';
+if(!TT_MODE.startsWith('3d'))document.getElementById('tt3d').remove();
+</script>
+<script src="turntable3d.js"></script><script src="ttphoto.js"></script><script src="lib/wc.js"></script><script src="ttwc.js"></script>
+<script>
+const TT_MAP={dark:'photo'};
+window.setTT=function(theme){
+  const mode=TT_FORCED||TT_MAP[theme]||'svg';
+  if(mode.startsWith('3d'))return; // 3D는 주소로 켤 때만(처음 불러올 때 정해짐)
+  document.querySelectorAll('[id^="tt-"]').forEach(e=>e.style.display='none');
+  document.getElementById('tt').style.display=mode==='svg'?'':'none';
+  if(mode==='svg')return;
+  let el=document.getElementById('tt-'+mode);
+  if(!el)el=mode==='wc'?buildTTWc():buildTTPhoto(mode);
+  if(el)el.style.display='';
+};
+setTT(THEME);
+</script>
+</body></html>

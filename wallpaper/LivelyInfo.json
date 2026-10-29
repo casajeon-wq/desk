@@ -1,0 +1,13 @@
+{
+  "AppVersion": "2.0.7.4",
+  "Title": "DESK",
+  "Thumbnail": "thumbnail.jpg",
+  "Preview": null,
+  "Desc": "흑백 턴테이블 바탕화면. 내 바탕화면 앱을 읽어 흑백 아이콘으로 바꿔 띄우고, 누르면 실제 앱이 열린다(설치.bat이 실행 도우미까지 깔아 줌).",
+  "Author": "",
+  "License": "",
+  "Contact": "",
+  "Type": 1,
+  "Arguments": null,
+  "FileName": "index.html"
+}
