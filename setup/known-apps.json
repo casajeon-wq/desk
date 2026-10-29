@@ -2,7 +2,7 @@
   "_설명": "바탕화면 바로가기 이름·실행 파일·주소에 k의 낱말이 들어 있으면 그 아이콘·분류를 쓴다(위에서부터 먼저 맞는 것). group = ai / write / film / tool. 없는 앱은 진짜 아이콘을 색 분리해서 씀.",
   "apps": [
     { "k": ["chatgpt", "openai"], "icon": "knot", "group": "ai", "sub": "AI 채팅" },
-    { "k": ["claude", "클로드"],"icon": "claude", "group": "ai", "sub": "AI" },
+    { "k": ["claude", "클로드"], "icon": "claude", "group": "ai", "sub": "AI" },
     { "k": ["gemini", "bard"], "icon": "spark", "group": "ai", "sub": "AI 채팅" },
     { "k": ["antigravity"], "icon": "orbit", "group": "ai", "sub": "AI 코딩" },
     { "k": ["perplexity", "grok", "copilot", "deepseek", "wrtn", "뤼튼", "clova", "클로바", "poe", "mistral", "qwen", "kimi"], "icon": "robot", "group": "ai", "sub": "AI" },
@@ -12,15 +12,10 @@
     { "k": ["comfyui", "comfy", "컴피", "stable diffusion", "webui", "forge", "fooocus", "invoke", "swarmui", "pinokio"], "icon": "palette", "group": "ai", "sub": "그림 AI" },
     { "k": ["midjourney", "novelai", "leonardo", "civitai", "tensor.art"], "icon": "brush", "group": "ai", "sub": "그림 AI" },
     { "k": ["cursor", "windsurf", "trae", "kiro"], "icon": "code", "group": "ai", "sub": "AI 코딩" },
-    { "k": ["mixdog"], "icon": "dog", "group": "ai", "sub": "코딩 에이전트" },
-    { "k": ["qoder"], "icon": "qoder", "group": "ai", "sub": "AI 코딩" },
-    { "k": ["muse"], "icon": "muse", "group": "ai", "sub": "AI" },
-
     { "k": ["visual studio code", "vscode", "code.exe", "vs code"], "icon": "code", "group": "tool", "sub": "코드" },
     { "k": ["visual studio", "intellij", "pycharm", "webstorm", "android studio", "sublime", "notepad++", "zed"], "icon": "code", "group": "tool", "sub": "코드" },
     { "k": ["terminal", "powershell", "cmd.exe", "git bash", "wsl", "ubuntu", "putty"], "icon": "terminal", "group": "tool", "sub": "터미널" },
     { "k": ["github", "git "], "icon": "code", "group": "tool", "sub": "개발" },
-
     { "k": ["notion"], "icon": "notion", "group": "write", "sub": "메모" },
     { "k": ["obsidian"], "icon": "obsidian", "group": "write", "sub": "메모" },
     { "k": ["한글", "hwp", "hancom", "한컴"], "icon": "han", "group": "write", "sub": "문서" },
@@ -31,7 +26,6 @@
     { "k": ["onenote", "evernote", "goodnotes", "joplin", "logseq", "메모", "sticky", "scrivener", "typora"], "icon": "note", "group": "write", "sub": "메모" },
     { "k": ["ridi", "리디", "kindle", "밀리", "yes24", "교보", "알라딘", "카카오페이지", "naver series", "시리즈", "문피아", "novelpia", "노벨피아", "조아라"], "icon": "ridi", "group": "write", "sub": "책" },
     { "k": ["papago", "파파고", "deepl", "번역", "translate"], "icon": "translate", "group": "write", "sub": "번역" },
-
     { "k": ["photoshop"], "icon": "ps", "group": "film", "sub": "사진 편집" },
     { "k": ["illustrator", "figma", "canva", "affinity", "krita", "clip studio", "클립 스튜디오", "csp", "medibang", "gimp", "paint.net", "sai", "aseprite"], "icon": "brush", "group": "film", "sub": "그림" },
     { "k": ["blender"], "icon": "blender", "group": "film", "sub": "3D" },
@@ -46,7 +40,6 @@
     { "k": ["spotify", "melon", "멜론", "genie", "지니", "bugs", "벅스", "flo", "플로", "itunes", "apple music", "foobar", "aimp", "musicbee", "audacity", "fl studio", "ableton", "cubase", "reaper", "suno"], "icon": "music", "group": "film", "sub": "음악" },
     { "k": ["honeyview", "꿀뷰", "imageglass", "xnview", "irfan", "사진", "photos", "알씨", "alsee"], "icon": "image", "group": "film", "sub": "사진" },
     { "k": ["zoom", "teams", "webex", "meet"], "icon": "video", "group": "tool", "sub": "화상회의" },
-
     { "k": ["chrome"], "icon": "chrome", "group": "tool", "sub": "브라우저" },
     { "k": ["msedge", "edge"], "icon": "edge", "group": "tool", "sub": "브라우저" },
     { "k": ["firefox"], "icon": "firefox", "group": "tool", "sub": "브라우저" },
@@ -57,7 +50,7 @@
     { "k": ["slack"], "icon": "slack", "group": "tool", "sub": "메신저" },
     { "k": ["line", "라인", "whatsapp", "signal", "messenger", "wechat", "위챗"], "icon": "chat", "group": "tool", "sub": "메신저" },
     { "k": ["instagram", "인스타"], "icon": "insta", "group": "tool", "sub": "SNS" },
-    { "k": ["twitter", "x", "x.com","threads", "스레드", "bluesky", "dcinside", "디시", "reddit"], "icon": "chat", "group": "tool", "sub": "SNS" },
+    { "k": ["twitter", "x", "x.com", "threads", "스레드", "bluesky", "dcinside", "디시", "reddit"], "icon": "chat", "group": "tool", "sub": "SNS" },
     { "k": ["steam", "스팀"], "icon": "steam", "group": "tool", "sub": "게임" },
     { "k": ["epic games", "battle.net", "배틀넷", "riot", "라이엇", "league of legends", "리그 오브 레전드", "valorant", "발로란트", "nexon", "넥슨", "넥슨플러그", "stove", "스토브", "ubisoft", "ea app", "origin", "gog", "xbox", "minecraft", "마인크래프트", "maplestory", "메이플", "lostark", "로스트아크", "genshin", "원신", "hoyoplay", "blue archive", "블루 아카이브", "overwatch", "오버워치", "pubg", "배그", "game", "게임", "launcher"], "icon": "game", "group": "tool", "sub": "게임" },
     { "k": ["gmail", "mail", "메일", "outlook", "thunderbird"], "icon": "mail", "group": "tool", "sub": "메일" },
