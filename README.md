@@ -1,6 +1,6 @@
 # DESK — 흑백 턴테이블 바탕화면
 
-![미리보기](docs/1-desk.png)
+![미리보기](docs/1-desk.png?v=3)
 
 **소개 페이지 (움짤 포함): https://casajeon-wq.github.io/desk/**
 
